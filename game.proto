@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package sbgame;
+
+service SBGame {
+    rpc createGame(Player) returns (SBGameState);
+    rpc attemptGuess(Attempt) returns (AttemptEvaluation);
+    rpc getSBGameState(Player) returns (SBGameState);
+} 
+
+message Player {
+    int32 id = 1;
+    string name = 2;
+    int32 session = 3; 
+}
+
+message Attempt {
+    string word = 1;
+    int32 session = 2;
+}
+
+message AttemptEvaluation {
+    bool valid = 1;
+    string word = 2;
+    int32 points = 3;
+}
+
+message SBGameState {
+    string player = 1;
+    int32 session = 2; 
+    int32 score = 3; 
+}
