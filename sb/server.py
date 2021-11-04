@@ -1,26 +1,44 @@
 #!/usr/bin/env python3
 
-import config
 import time
-import json
-import requests
-import sb_game
-from oxforddictionaries.words import OxfordDictionaries
+import grpc
+import config
+from concurrent import futures
 
+from game_pb2 import Attempt
+from game_pb2_grpc import SBGameServicer, add_SBGameServicerServicer_to_server
+from sb_game import SBGame
 
-def 
-
-
-
-class SBServer:
+# inherit service class from compiled proto
+class SBGameServer(SBGameServicer):
 
     def __init__(self):
-        self.app_id = config.api_key
-        self.app_key = config.api_secret
-        self.o = OxfordDictionaries(self.app_id, self.app_key)
+        # setup server
+        self.server = grpc.server(futures.ProcessPoolExecutor(max_workers=8))
+        add_SBGameServicerServicer_to_server(SBGameServer, self.server)
+        # establish grpc connection
+        self.server.add_insecure_port(f"{config.server_host}:{config.server_port}")
+        self.GameSingleton = SBGame()
+        
+    def launch(self):
+        self.server.start()
+        # start() doesn't block so we need a sleep loop
+        # https://grpc.io/docs/languages/python/basics/
+        try:
+            while True:
+                time.sleep(86400)
+        except KeyboardInterrupt:
+            self.server.stop(0);
 
-    def async_word_search(self, word):
-        result = self.o.get_info_about_word(word).json()
+    def createGame(self, req, context):
+        player = req
+        response = self.GameSingleton.create_game(player)
+        return response
 
-class State():
-    def 
+    def attemptGuess(self, req, context):
+        evaluation = self.GameSingleton.validate_attempt(req)
+        return evaluation
+
+
+    
+

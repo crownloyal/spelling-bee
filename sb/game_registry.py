@@ -2,14 +2,18 @@
 
 import time
 import threading
-from sb_game import SBGame
+import random
+from uuid import uuid4
+
+import database_manager
+from sb_game import Player
 
 class GameRegistry:
 
-    __instance = home
+    __instance = None
 
     def __init__(self):
-        if GameRegistry.__instance in not None:
+        if GameRegistry.__instance is not None:
             raise Exception("This is a singleton and already instanciated")
         else:
             GameRegistry.__instance = self
@@ -17,13 +21,27 @@ class GameRegistry:
         self.matches = {}
         self.instance = None
 
+    @staticmethod
     def get_instance():
         if GameRegistry.__instance is None:
             with threading.lock():
                 if GameRegistry.__instance is None:
                     GameRegistry()
+                return GameRegistry.__instance
 
-    def createGame(player):
-        SBGame.new_game(player)
+    def register_new_session(player: Player):
+        if player is not None:
+            Exception("Player object empty!")
+        
+    def update_game(letters: enumerate):
+        if letters:
+            return
+    
+    def roll_letters():
+        list = []
+        list.push()
 
-        return
+    def create_game(player: Player):
+        new_Player =GameRegistry.register_new_session(player)
+        letters = GameRegistry.roll_letters()
+        game = GameRegistry.update_game(letters)
