@@ -14,28 +14,23 @@ class SBGameServicerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.createGame = channel.unary_unary(
-                '/sbgame.SBGameServicer/createGame',
-                request_serializer=game__pb2.Player.SerializeToString,
+        self.create_game = channel.unary_unary(
+                '/sbgame.SBGameServicer/create_game',
+                request_serializer=game__pb2.SBGameState.SerializeToString,
                 response_deserializer=game__pb2.SBGameState.FromString,
                 )
-        self.attemptGuess = channel.unary_unary(
-                '/sbgame.SBGameServicer/attemptGuess',
+        self.attempt_guess = channel.unary_unary(
+                '/sbgame.SBGameServicer/attempt_guess',
                 request_serializer=game__pb2.Attempt.SerializeToString,
                 response_deserializer=game__pb2.AttemptEvaluation.FromString,
                 )
-        self.getSBGameState = channel.unary_unary(
-                '/sbgame.SBGameServicer/getSBGameState',
-                request_serializer=game__pb2.Player.SerializeToString,
+        self.get_SBGameState = channel.unary_unary(
+                '/sbgame.SBGameServicer/get_SBGameState',
+                request_serializer=game__pb2.SBGameState.SerializeToString,
                 response_deserializer=game__pb2.SBGameState.FromString,
                 )
-        self.getHighscrores = channel.unary_stream(
-                '/sbgame.SBGameServicer/getHighscrores',
-                request_serializer=game__pb2.Player.SerializeToString,
-                response_deserializer=game__pb2.SBGameState.FromString,
-                )
-        self.getMyHighscrores = channel.unary_stream(
-                '/sbgame.SBGameServicer/getMyHighscrores',
+        self.get_highscores = channel.unary_stream(
+                '/sbgame.SBGameServicer/get_highscores',
                 request_serializer=game__pb2.Player.SerializeToString,
                 response_deserializer=game__pb2.SBGameState.FromString,
                 )
@@ -44,31 +39,25 @@ class SBGameServicerStub(object):
 class SBGameServicerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def createGame(self, request, context):
+    def create_game(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def attemptGuess(self, request, context):
+    def attempt_guess(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def getSBGameState(self, request, context):
+    def get_SBGameState(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def getHighscrores(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def getMyHighscrores(self, request, context):
+    def get_highscores(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -77,28 +66,23 @@ class SBGameServicerServicer(object):
 
 def add_SBGameServicerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'createGame': grpc.unary_unary_rpc_method_handler(
-                    servicer.createGame,
-                    request_deserializer=game__pb2.Player.FromString,
+            'create_game': grpc.unary_unary_rpc_method_handler(
+                    servicer.create_game,
+                    request_deserializer=game__pb2.SBGameState.FromString,
                     response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
-            'attemptGuess': grpc.unary_unary_rpc_method_handler(
-                    servicer.attemptGuess,
+            'attempt_guess': grpc.unary_unary_rpc_method_handler(
+                    servicer.attempt_guess,
                     request_deserializer=game__pb2.Attempt.FromString,
                     response_serializer=game__pb2.AttemptEvaluation.SerializeToString,
             ),
-            'getSBGameState': grpc.unary_unary_rpc_method_handler(
-                    servicer.getSBGameState,
-                    request_deserializer=game__pb2.Player.FromString,
+            'get_SBGameState': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_SBGameState,
+                    request_deserializer=game__pb2.SBGameState.FromString,
                     response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
-            'getHighscrores': grpc.unary_stream_rpc_method_handler(
-                    servicer.getHighscrores,
-                    request_deserializer=game__pb2.Player.FromString,
-                    response_serializer=game__pb2.SBGameState.SerializeToString,
-            ),
-            'getMyHighscrores': grpc.unary_stream_rpc_method_handler(
-                    servicer.getMyHighscrores,
+            'get_highscores': grpc.unary_stream_rpc_method_handler(
+                    servicer.get_highscores,
                     request_deserializer=game__pb2.Player.FromString,
                     response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
@@ -113,7 +97,7 @@ class SBGameServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def createGame(request,
+    def create_game(request,
             target,
             options=(),
             channel_credentials=None,
@@ -123,14 +107,14 @@ class SBGameServicer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/createGame',
-            game__pb2.Player.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/create_game',
+            game__pb2.SBGameState.SerializeToString,
             game__pb2.SBGameState.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def attemptGuess(request,
+    def attempt_guess(request,
             target,
             options=(),
             channel_credentials=None,
@@ -140,14 +124,14 @@ class SBGameServicer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/attemptGuess',
+        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/attempt_guess',
             game__pb2.Attempt.SerializeToString,
             game__pb2.AttemptEvaluation.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def getSBGameState(request,
+    def get_SBGameState(request,
             target,
             options=(),
             channel_credentials=None,
@@ -157,14 +141,14 @@ class SBGameServicer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/getSBGameState',
-            game__pb2.Player.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/sbgame.SBGameServicer/get_SBGameState',
+            game__pb2.SBGameState.SerializeToString,
             game__pb2.SBGameState.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def getHighscrores(request,
+    def get_highscores(request,
             target,
             options=(),
             channel_credentials=None,
@@ -174,24 +158,7 @@ class SBGameServicer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/sbgame.SBGameServicer/getHighscrores',
-            game__pb2.Player.SerializeToString,
-            game__pb2.SBGameState.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def getMyHighscrores(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/sbgame.SBGameServicer/getMyHighscrores',
+        return grpc.experimental.unary_stream(request, target, '/sbgame.SBGameServicer/get_highscores',
             game__pb2.Player.SerializeToString,
             game__pb2.SBGameState.FromString,
             options, channel_credentials,

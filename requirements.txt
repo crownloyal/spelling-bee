@@ -1,2 +1,4 @@
 oxforddictionaries
 grpcio
+grpcio-tools
+protobuf

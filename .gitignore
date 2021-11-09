@@ -1,2 +1,4 @@
 venv/
 config.py
+sb/__pycache__/
+.vscode/
