@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package sbgame;
+package sb;
 
-service SBGameServicer {
-    rpc create_game(SBGameState) returns (SBGameState);
-    rpc attempt_guess(Attempt) returns (AttemptEvaluation);
-    rpc get_SBGameState(SBGameState) returns (SBGameState);
-    rpc get_highscores(Player) returns (stream SBGameState);
+service SBGameService {
+    rpc CreateGame (SBGameState) returns (SBGameState) {}
+    rpc AttemptGuess (Attempt) returns (AttemptEvaluation) {}
+    rpc GetSBGameState (StateRequest) returns (SBGameState) {}
+    rpc GetHighscores (Player) returns (stream SBGameState) {}
 } 
 
 message Player {
@@ -23,21 +23,26 @@ message Attempt {
 
 message AttemptEvaluation {
     bool valid = 1;
+    string message = 6;
     string word = 2;
     int32 points = 3;
     int32 timestamp = 4;
     int32 attemptId = 5;
+    bool error = 7;
+    string errorMessage = 8;
 }
 
 message StateRequest {
-    int32 timestamp = 1;
+    string timestamp = 1;
 }
 
 message SBGameState {
     string player = 1;
-    int32 session = 2; 
+    int64 session = 2; 
     int32 score = 3;
     int32 tries = 4;
     repeated string wordlist = 5;
-    int32 timestamp = 6;
+    int64 timestamp = 6;
+    bool error = 7;
+    string errorMessage = 8;
 }

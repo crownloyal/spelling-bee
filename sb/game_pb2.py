@@ -15,11 +15,11 @@ _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='game.proto',
-  package='sbgame',
+  package='sb',
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ngame.proto\x12\x06sbgame\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"f\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\x05\x12\x11\n\tattemptId\x18\x05 \x01(\x05\"q\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x05\x32\xaa\x02\n\x0eSBGameServicer\x12\x31\n\ncreateGame\x12\x0e.sbgame.Player\x1a\x13.sbgame.SBGameState\x12:\n\x0c\x61ttemptGuess\x12\x0f.sbgame.Attempt\x1a\x19.sbgame.AttemptEvaluation\x12\x35\n\x0egetSBGameState\x12\x0e.sbgame.Player\x1a\x13.sbgame.SBGameState\x12\x37\n\x0egetHighscrores\x12\x0e.sbgame.Player\x1a\x13.sbgame.SBGameState0\x01\x12\x39\n\x10getMyHighscrores\x12\x0e.sbgame.Player\x1a\x13.sbgame.SBGameState0\x01\x62\x06proto3'
+  serialized_pb=b'\n\ngame.proto\x12\x02sb\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"\x9c\x01\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x06 \x01(\t\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\x05\x12\x11\n\tattemptId\x18\x05 \x01(\x05\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t\"!\n\x0cStateRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\t\"\x96\x01\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x03\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t2\xe0\x01\n\rSBGameService\x12\x30\n\nCreateGame\x12\x0f.sb.SBGameState\x1a\x0f.sb.SBGameState\"\x00\x12\x34\n\x0c\x41ttemptGuess\x12\x0b.sb.Attempt\x1a\x15.sb.AttemptEvaluation\"\x00\x12\x35\n\x0eGetSBGameState\x12\x10.sb.StateRequest\x1a\x0f.sb.SBGameState\"\x00\x12\x30\n\rGetHighscores\x12\n.sb.Player\x1a\x0f.sb.SBGameState\"\x00\x30\x01\x62\x06proto3'
 )
 
 
@@ -27,28 +27,28 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 
 _PLAYER = _descriptor.Descriptor(
   name='Player',
-  full_name='sbgame.Player',
+  full_name='sb.Player',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='sbgame.Player.id', index=0,
+      name='id', full_name='sb.Player.id', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='name', full_name='sbgame.Player.name', index=1,
+      name='name', full_name='sb.Player.name', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='session', full_name='sbgame.Player.session', index=2,
+      name='session', full_name='sb.Player.session', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -66,35 +66,35 @@ _PLAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=22,
-  serialized_end=73,
+  serialized_start=18,
+  serialized_end=69,
 )
 
 
 _ATTEMPT = _descriptor.Descriptor(
   name='Attempt',
-  full_name='sbgame.Attempt',
+  full_name='sb.Attempt',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='word', full_name='sbgame.Attempt.word', index=0,
+      name='word', full_name='sb.Attempt.word', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='session', full_name='sbgame.Attempt.session', index=1,
+      name='session', full_name='sb.Attempt.session', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='sbgame.Attempt.timestamp', index=2,
+      name='timestamp', full_name='sb.Attempt.timestamp', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -112,51 +112,72 @@ _ATTEMPT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=75,
-  serialized_end=134,
+  serialized_start=71,
+  serialized_end=130,
 )
 
 
 _ATTEMPTEVALUATION = _descriptor.Descriptor(
   name='AttemptEvaluation',
-  full_name='sbgame.AttemptEvaluation',
+  full_name='sb.AttemptEvaluation',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='valid', full_name='sbgame.AttemptEvaluation.valid', index=0,
+      name='valid', full_name='sb.AttemptEvaluation.valid', index=0,
       number=1, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='word', full_name='sbgame.AttemptEvaluation.word', index=1,
+      name='message', full_name='sb.AttemptEvaluation.message', index=1,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='word', full_name='sb.AttemptEvaluation.word', index=2,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='points', full_name='sbgame.AttemptEvaluation.points', index=2,
+      name='points', full_name='sb.AttemptEvaluation.points', index=3,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='sbgame.AttemptEvaluation.timestamp', index=3,
+      name='timestamp', full_name='sb.AttemptEvaluation.timestamp', index=4,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='attemptId', full_name='sbgame.AttemptEvaluation.attemptId', index=4,
+      name='attemptId', full_name='sb.AttemptEvaluation.attemptId', index=5,
       number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='sb.AttemptEvaluation.error', index=6,
+      number=7, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='errorMessage', full_name='sb.AttemptEvaluation.errorMessage', index=7,
+      number=8, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -172,58 +193,23 @@ _ATTEMPTEVALUATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=136,
-  serialized_end=238,
+  serialized_start=133,
+  serialized_end=289,
 )
 
 
-_SBGAMESTATE = _descriptor.Descriptor(
-  name='SBGameState',
-  full_name='sbgame.SBGameState',
+_STATEREQUEST = _descriptor.Descriptor(
+  name='StateRequest',
+  full_name='sb.StateRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='player', full_name='sbgame.SBGameState.player', index=0,
+      name='timestamp', full_name='sb.StateRequest.timestamp', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='session', full_name='sbgame.SBGameState.session', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='score', full_name='sbgame.SBGameState.score', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='tries', full_name='sbgame.SBGameState.tries', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wordlist', full_name='sbgame.SBGameState.wordlist', index=4,
-      number=5, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timestamp', full_name='sbgame.SBGameState.timestamp', index=5,
-      number=6, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -239,69 +225,158 @@ _SBGAMESTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=240,
-  serialized_end=353,
+  serialized_start=291,
+  serialized_end=324,
+)
+
+
+_SBGAMESTATE = _descriptor.Descriptor(
+  name='SBGameState',
+  full_name='sb.SBGameState',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='player', full_name='sb.SBGameState.player', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='session', full_name='sb.SBGameState.session', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='score', full_name='sb.SBGameState.score', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tries', full_name='sb.SBGameState.tries', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='wordlist', full_name='sb.SBGameState.wordlist', index=4,
+      number=5, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='timestamp', full_name='sb.SBGameState.timestamp', index=5,
+      number=6, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='sb.SBGameState.error', index=6,
+      number=7, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='errorMessage', full_name='sb.SBGameState.errorMessage', index=7,
+      number=8, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=327,
+  serialized_end=477,
 )
 
 DESCRIPTOR.message_types_by_name['Player'] = _PLAYER
 DESCRIPTOR.message_types_by_name['Attempt'] = _ATTEMPT
 DESCRIPTOR.message_types_by_name['AttemptEvaluation'] = _ATTEMPTEVALUATION
+DESCRIPTOR.message_types_by_name['StateRequest'] = _STATEREQUEST
 DESCRIPTOR.message_types_by_name['SBGameState'] = _SBGAMESTATE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Player = _reflection.GeneratedProtocolMessageType('Player', (_message.Message,), {
   'DESCRIPTOR' : _PLAYER,
   '__module__' : 'game_pb2'
-  # @@protoc_insertion_point(class_scope:sbgame.Player)
+  # @@protoc_insertion_point(class_scope:sb.Player)
   })
 _sym_db.RegisterMessage(Player)
 
 Attempt = _reflection.GeneratedProtocolMessageType('Attempt', (_message.Message,), {
   'DESCRIPTOR' : _ATTEMPT,
   '__module__' : 'game_pb2'
-  # @@protoc_insertion_point(class_scope:sbgame.Attempt)
+  # @@protoc_insertion_point(class_scope:sb.Attempt)
   })
 _sym_db.RegisterMessage(Attempt)
 
 AttemptEvaluation = _reflection.GeneratedProtocolMessageType('AttemptEvaluation', (_message.Message,), {
   'DESCRIPTOR' : _ATTEMPTEVALUATION,
   '__module__' : 'game_pb2'
-  # @@protoc_insertion_point(class_scope:sbgame.AttemptEvaluation)
+  # @@protoc_insertion_point(class_scope:sb.AttemptEvaluation)
   })
 _sym_db.RegisterMessage(AttemptEvaluation)
+
+StateRequest = _reflection.GeneratedProtocolMessageType('StateRequest', (_message.Message,), {
+  'DESCRIPTOR' : _STATEREQUEST,
+  '__module__' : 'game_pb2'
+  # @@protoc_insertion_point(class_scope:sb.StateRequest)
+  })
+_sym_db.RegisterMessage(StateRequest)
 
 SBGameState = _reflection.GeneratedProtocolMessageType('SBGameState', (_message.Message,), {
   'DESCRIPTOR' : _SBGAMESTATE,
   '__module__' : 'game_pb2'
-  # @@protoc_insertion_point(class_scope:sbgame.SBGameState)
+  # @@protoc_insertion_point(class_scope:sb.SBGameState)
   })
 _sym_db.RegisterMessage(SBGameState)
 
 
 
-_SBGAMESERVICER = _descriptor.ServiceDescriptor(
-  name='SBGameServicer',
-  full_name='sbgame.SBGameServicer',
+_SBGAMESERVICE = _descriptor.ServiceDescriptor(
+  name='SBGameService',
+  full_name='sb.SBGameService',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=356,
-  serialized_end=654,
+  serialized_start=480,
+  serialized_end=704,
   methods=[
   _descriptor.MethodDescriptor(
-    name='createGame',
-    full_name='sbgame.SBGameServicer.createGame',
+    name='CreateGame',
+    full_name='sb.SBGameService.CreateGame',
     index=0,
     containing_service=None,
-    input_type=_PLAYER,
+    input_type=_SBGAMESTATE,
     output_type=_SBGAMESTATE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='attemptGuess',
-    full_name='sbgame.SBGameServicer.attemptGuess',
+    name='AttemptGuess',
+    full_name='sb.SBGameService.AttemptGuess',
     index=1,
     containing_service=None,
     input_type=_ATTEMPT,
@@ -310,18 +385,18 @@ _SBGAMESERVICER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='getSBGameState',
-    full_name='sbgame.SBGameServicer.getSBGameState',
+    name='GetSBGameState',
+    full_name='sb.SBGameService.GetSBGameState',
     index=2,
     containing_service=None,
-    input_type=_PLAYER,
+    input_type=_STATEREQUEST,
     output_type=_SBGAMESTATE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='getHighscrores',
-    full_name='sbgame.SBGameServicer.getHighscrores',
+    name='GetHighscores',
+    full_name='sb.SBGameService.GetHighscores',
     index=3,
     containing_service=None,
     input_type=_PLAYER,
@@ -329,19 +404,9 @@ _SBGAMESERVICER = _descriptor.ServiceDescriptor(
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
-  _descriptor.MethodDescriptor(
-    name='getMyHighscrores',
-    full_name='sbgame.SBGameServicer.getMyHighscrores',
-    index=4,
-    containing_service=None,
-    input_type=_PLAYER,
-    output_type=_SBGAMESTATE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
 ])
-_sym_db.RegisterServiceDescriptor(_SBGAMESERVICER)
+_sym_db.RegisterServiceDescriptor(_SBGAMESERVICE)
 
-DESCRIPTOR.services_by_name['SBGameServicer'] = _SBGAMESERVICER
+DESCRIPTOR.services_by_name['SBGameService'] = _SBGAMESERVICE
 
 # @@protoc_insertion_point(module_scope)

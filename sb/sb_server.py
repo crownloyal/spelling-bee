@@ -1,43 +1,62 @@
 #!/usr/bin/env python3
 
-import grpc
 import config
+import logging
 from concurrent import futures
 
-from game_pb2_grpc import SBGameServicer, add_SBGameServicerServicer_to_server
+import grpc
+import game_pb2_grpc
 from sb_game_registry import SBGameRegistry
+from sb_game import SBGame, Attempt
 
-from sb_game import SBGame
+GRPC_VERBOSITY="debug"
+GRPC_TRACE="all"
 
 # inherit service class from compiled proto
-class SBGameServer(SBGameServicer, SBGameRegistry):
-    def __init__(self, SBGameServicer, SBGameRegistry):
-        # setup server
-        self.server = grpc.server(futures.ProcessPoolExecutor(max_workers=1))
-        add_SBGameServicerServicer_to_server(SBGameServicer, self.server)
-        # establish grpc connection
-        self.server.add_insecure_port(f"{config.server_host}:{config.server_port}")
-        self.GameSingleton = SBGame(SBGameRegistry)
+class SBGameServer(game_pb2_grpc.SBGameService):
+    def __init__(self, sbgreg: SBGameRegistry):
+        super().__init__()
+        # launch game instance for logic and persistence
+        self.gr = sbgreg
+        self.game = SBGame(self.gr)
         
-    def launch(self, registry: SBGameRegistry):
-        self.server.start()
-        self.create_game(registry, None)
-        # start() doesn't block so we need a sleep loop
-        # https://grpc.io/docs/languages/python/basics/        
-        print(registry.print_game_status())
-        self.server.wait_for_termination()
+    def launch(self):
+        self.CreateGame(self.gr, None)
+        print(self.gr.print_game_status())
 
-    def create_game(self, req, context):
-        response = self.GameSingleton.new_game()
-        return response
+    def CreateGame(self, req, context):
+        response = self.game.new_game()
+        gamestate = self.gr.gamestate()
+        return gamestate
 
-    def attempt_guess(self, req, context):
-        evaluation = self.GameSingleton.validate_attempt(req)
+    def AttemptGuess(self, req, context):
+        print("attempt event triggered")
+        word = req
+        evaluation = self.game.validate_attempt(
+            Attempt(word, self.gr.letters)
+        )
         return evaluation
 
-    def get_SBGameState(self, req, context):
-        return gr.gamestate()
+    def GetSBGameState(self, req, context):
+        # req is the client state; it *should* differ from the in-server state
+        print("Gamestate req in")
+        req_time = req
+        gamestate = self.gr.gamestate()
+        return gamestate
 
-gr = SBGameRegistry()
-server = SBGameServer(SBGameServicer(), gr)
-server.launch(gr)
+if __name__ == '__main__':
+    logging.basicConfig()
+
+    gr = SBGameRegistry()
+    gameserver = SBGameServer(gr)
+    gameserver.launch()
+
+    # setup server
+    rpcserver = grpc.server(futures.ProcessPoolExecutor(max_workers=10))
+    game_pb2_grpc.add_SBGameServiceServicer_to_server(gameserver, rpcserver)
+    # open grpc port
+    rpcserver.add_insecure_port(f"{config.server_host}:{config.server_port}")
+    rpcserver.start()
+    print(f"Connection open @ {config.server_host}:{config.server_port}")
+    rpcserver.wait_for_termination()
+

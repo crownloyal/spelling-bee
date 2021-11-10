@@ -21,14 +21,14 @@ grpcio
 grpcio-tools
 protobuf
 
+Installing above dependencies:
+> pip3 install -r requirements.txt
+
 *Running this madness:*
 Compiling the proto definition:
 > protoc -I=. --python_out=./sb ./game.proto
 , or alternatively
-> python3 -m grpc_tools.protoc -I . --grpc_python_out=./sb ./game.proto
-
-Installing dependencies:
-> pip3 install -r requirements.txt
+> python3 -m grpc_tools.protoc -I . --grpc_python_out=./sb --python_out=./sb ./game.proto
 
 launch the server:
 > python3 ./sb/server.py

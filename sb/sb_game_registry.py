@@ -30,10 +30,11 @@ class SBGameRegistry:
     _instance = None
     _lock = threading.Lock()
 
-    matches = []
-    letters = None
-    attempts = 0
-    score = 0
+    def __init__(self) -> None:
+        self.matches = []
+        self.letters = None
+        self.attempts = 0
+        self.score = 0
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -99,6 +100,7 @@ class SBGameRegistry:
         self.letters = self.roll_multiple_unique_letters(7)
         self.attempts = 0
         self.score = 0
+        print("Game reset")
 
     def print_game_status(self):
         letters = self.letters
@@ -107,11 +109,11 @@ class SBGameRegistry:
 
     def gamestate(self):
         state = SBGameState(
-            0, 
+            "crown", 
             0,
             self.score,
             self.attempts,
             self.matches,
-            time.time()
+            int(time.time())
         )
         return state
