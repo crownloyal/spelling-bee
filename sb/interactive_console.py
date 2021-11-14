@@ -17,7 +17,7 @@ class SBTerminal:
         self.stub = SBGameServiceStub(channel)
         self.state = SBGameState() 
         self.exit = True
-        # let's use some empty state as placehold
+        # let's use some empty state as placeholder
 
     def ask_user_input(self) -> str:
         user_input = input('Your guess: ')
@@ -25,11 +25,16 @@ class SBTerminal:
         return user_input_mod    
 
     def try_solution(self, user_input: str) -> None:
-        if user_input[0] == ".":
+        if len(user_input) == 0:
+            print("You haven't entered anything; try again.")
+            return
+        elif user_input[0] == ".":
             self.help_module(user_input)
         else:
             attempt = Attempt(word=user_input, session=0, timestamp=1)
-            self.stub.AttemptGuess(attempt)
+            validated_attempt = self.stub.AttemptGuess(attempt)
+            if validated_attempt.message:
+                print(validated_attempt.message)
             self.state = self.update_state()
 
     def update_state(self) -> None:
@@ -37,17 +42,30 @@ class SBTerminal:
         req = StateRequest(timestamp=timenow)
         new = self.stub.GetSBGameState(req, None)
         return new
+
+    def print_state(self):
+        print("")
+        print("= = = = =")
+        print("INFO")
+        print("Player:", self.state.player)
+        print("Score:", self.state.score, "/ Avg:", self.state.score/self.state.tries if self.state.tries else 0) # sheesh python, I'll never like you but this kinda neat
+        print("Tries:", self.state.tries)
+        print("Solved:", self.state.wordlist)
+        print("Letters:", self.state.letters)
+        print("           ^ First letter required!")
+        print("= = = = =")
+        print("")
         
     def help_module(self, word):
         if word == '.SCORES':
-        # get highscore from grpc
-            return
+            highscores = self.stub.GetHighscores(StateRequest(), None)
+            print(highscores)
         elif word == '.HELP':
             print("If you don't know this game, we can't help you.")
             return
         elif word == '.NEW':
             return self.stub.CreateGame(StateRequest(), None)
-        elif word == '.EXIT':
+        elif word == '.EXIT' or word == '.Q':
             print("Quitting...")
             # optional: save state in DB
             self.exit = False
@@ -59,14 +77,11 @@ if __name__ == '__main__':
     # console game loop
     def wrapper():
         while terminal.exit:
-            print(terminal.state)
-            print(terminal.state.letters)
-
+            terminal.print_state()
             guess = terminal.ask_user_input()
             terminal.try_solution(guess)
             terminal.state = terminal.update_state()
-
-        
+    
     terminal = SBTerminal()
     terminal.state = terminal.update_state()
     wrapper()

@@ -10,7 +10,7 @@ import game_pb2
 import game_pb2_grpc
 
 from sb_game_registry import SBGameRegistry
-from sb_game import SBGame, Attempt
+from sb_game import AttemptEvaluation, SBGame, Attempt
 
 # inherit service class from compiled proto
 class SBGameServer(game_pb2_grpc.SBGameService):
@@ -27,7 +27,8 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             score=state.score,
             tries=state.tries,
             wordlist=state.wordlist,
-            timestamp=state.timestamp
+            timestamp=state.timestamp,
+            letters=state.letters
             )
     
     def launch(self):
@@ -46,7 +47,7 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             letters=self.gr.letters
             )
 
-    def AttemptGuess(self, req, context):
+    def AttemptGuess(self, req, context) -> AttemptEvaluation:
         word = req.word
         attempt = Attempt(word, self.gr.letters)
         evaluation = self.game.validate_attempt(attempt)
@@ -54,7 +55,7 @@ class SBGameServer(game_pb2_grpc.SBGameService):
         print("Matches", self.gr.matches)
         print("Score", self.gr.score)
 
-        if evaluation.valid is True:
+        if evaluation.valid is True and evaluation.message == None:
             self.game.process_valid_attempt(evaluation)
 
         return game_pb2.AttemptEvaluation(

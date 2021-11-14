@@ -99,22 +99,26 @@ class SBGameRegistry:
     def roll_multiple_unique_letters(self, count: int):
         list = []
         # first letter is special!
-        list.append(self.roll_letter_not_vowel_nor_s())
+        # randomness has been a bit weird;
+        # we see annoying characthers too often
+        while len(list) == 0 or list[0] == 'X' or list[0] == 'Q':
+            list = []
+            list.append(self.roll_letter_not_vowel_nor_s())
 
         while(len(list) < count):
             letter = self.roll_letter_not_s()
             if self.no_more_than_2_vowels(letter, list):
                 if self.not_yet_in_list(letter, list):
                     list.append(letter)
+
         return list
 
     def create_game(self):
         self.letters = self.roll_multiple_unique_letters(7)
         self.attempts = 0
         self.score = 0
-        print("Game reset")
+        self.matches = []
         print(self.print_game_status())
-        print("   ^ First letter required!")
         
     def print_game_status(self):
         letters = self.letters
