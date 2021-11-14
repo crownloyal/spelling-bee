@@ -23,13 +23,11 @@ message Attempt {
 
 message AttemptEvaluation {
     bool valid = 1;
-    string message = 6;
     string word = 2;
     int32 points = 3;
-    int32 timestamp = 4;
-    int32 attemptId = 5;
-    bool error = 7;
-    string errorMessage = 8;
+    string timestamp = 4;
+    string attemptId = 5;
+    string message = 6;
 }
 
 message StateRequest {
@@ -45,4 +43,5 @@ message SBGameState {
     int64 timestamp = 6;
     bool error = 7;
     string errorMessage = 8;
+    repeated string letters = 9;
 }

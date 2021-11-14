@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from logging import error
 import time
 import threading
 import random
@@ -17,7 +18,9 @@ class SBGameState:
             score = 0, 
             tries = 0,
             wordlist = [],
-            time = 0
+            time = 0,
+            letters = []
+
         ):
         self.player = player
         self.session = session
@@ -25,6 +28,15 @@ class SBGameState:
         self.tries = tries
         self.wordlist = wordlist
         self.timestamp = time
+        self.letters = letters
+
+    def print(self):
+        print("Player:", self.player)
+        print("session:", self.session)
+        print("score:", self.score)
+        print("wordlist:", self.wordlist)
+        print("timestamp:", self.timestamp)
+        print("letters:", self.letters)
 
 class SBGameRegistry:
     _instance = None
@@ -101,7 +113,9 @@ class SBGameRegistry:
         self.attempts = 0
         self.score = 0
         print("Game reset")
-
+        print(self.print_game_status())
+        print("   ^ First letter required!")
+        
     def print_game_status(self):
         letters = self.letters
         points = self.score
@@ -114,6 +128,7 @@ class SBGameRegistry:
             self.score,
             self.attempts,
             self.matches,
-            int(time.time())
+            int(time.time()),
+            letters=self.letters
         )
         return state

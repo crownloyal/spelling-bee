@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 import time
+import config
 import config_game
 from uuid import uuid4
 from sb_game_registry import SBGameRegistry
+
 from oxforddictionaries.words import OxfordDictionaries
 
-o = OxfordDictionaries
+o = OxfordDictionaries(config.api_key, config.api_secret)
 
 class Attempt:
     def __init__(self, word: str, letters: list):
@@ -32,19 +34,29 @@ class SBGame:
     def validate_attempt(self, new_attempt: Attempt):
         self.gr.attempts += 1
 
+        new_attempt = AttemptEvaluation(new_attempt.word, new_attempt.letters)
+
         if new_attempt.valid is False:
-            return Exception('Word has non-matching letters')
+            new_attempt.message = "Word has non-matching letters"
+            return new_attempt
+
         if new_attempt.word in self.gr.matches:
-            return Exception('Word already part of the solution set')
+            new_attempt.message = "Word already part of the solution set"
+            return new_attempt
         if len(new_attempt.word) < config_game.MIN_WORD_LENGTH:
-            return Exception('Guessed word is too short. Minimum length:', str(config_game.MIN_WORD_LENGTH))
+            new_attempt.message = (f"Guessed word is too short. Minimum length: {str(config_game.MIN_WORD_LENGTH)}")
+            return new_attempt
         if new_attempt.word[0] not in self.gr.letters[0]:
-            return Exception('Must include letter:', self.gr.letters[0])
+            new_attempt.message = (f"Must include letter: {self.gr.letters[0]}")
+            return new_attempt
 
         result = o.get_info_about_word(Attempt.word).json()
         if result is None:
-            return Exception('Not a valid word!')
-        return result
+            new_attempt.error = True
+            new_attempt.message = (f"Not a valid word if you believe Oxford")
+            return new_attempt
+        print(result)
+        return new_attempt
         
     def calculate_points(attempt: Attempt):
         # simple scoring algorithm, for now
@@ -58,11 +70,11 @@ class SBGame:
         
 
 class AttemptEvaluation(Attempt):
-    def __init__(self, word: str, letters: list, message):
+    def __init__(self, word: str, letters: list):
         super().__init__(word, letters)
         self.points = SBGame.calculate_points(self)
-        self.timestamp = time.time()
-        self.attemptId = uuid4()
-        self.message = message
+        self.timestamp = str(time.time())
+        self.attemptId = str(uuid4())
+        self.message = None
         self.error = False
         self.errorMessage = ""

@@ -22,7 +22,6 @@ class SBGameServer(game_pb2_grpc.SBGameService):
         
     def launch(self):
         self.CreateGame(self.gr, None)
-        print(self.gr.print_game_status())
 
     def CreateGame(self, req, context):
         response = self.game.new_game()

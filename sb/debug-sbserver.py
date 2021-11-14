@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from os import stat
 import config
 import logging
 from concurrent import futures
@@ -30,11 +31,9 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             )
     
     def launch(self):
-        self.CreateGame()
-        print(self.gr.print_game_status())
-        print("   ^ First letter required!")
+        self.CreateGame(game_pb2.StateRequest(), None)
 
-    def CreateGame(self):
+    def CreateGame(self, req, context):
         self.gr.create_game()
         state = self.gr.gamestate()
         return game_pb2.SBGameState(
@@ -43,37 +42,30 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             score=state.score,
             tries=state.tries,
             wordlist=state.wordlist,
-            timestamp=state.timestamp
+            timestamp=state.timestamp,
+            letters=self.gr.letters
             )
 
     def AttemptGuess(self, req, context):
-        try:
-            evaluation = self.game.validate_attempt(
-                Attempt(req.word, self.gr.letters)
-                )
-        except:
-            return game_pb2.AttemptEvaluation(
-                valid = evaluation.valid,
-                message = evaluation.message,
-                word = evaluation.word,
-                points = evaluation.points,
-                timestamp = evaluation.timestamp,
-                attemptId = evaluation.attemptId
-                error = evaluation.error
-                errorMessage = evaluation.errorMessage
-            )
+        word = req.word
+        attempt = Attempt(word, self.gr.letters)
+        evaluation = self.game.validate_attempt(attempt)
+
+        print("Matches", self.gr.matches)
+        print("Score", self.gr.score)
+
+        if evaluation.valid is True:
+            self.game.process_valid_attempt(evaluation)
 
         return game_pb2.AttemptEvaluation(
             valid = evaluation.valid,
-            message = evaluation.message,
             word = evaluation.word,
             points = evaluation.points,
             timestamp = evaluation.timestamp,
-            attemptId = evaluation.attemptId
-            error = False
-            errorMessage = ""
+            attemptId = evaluation.attemptId,
+            message = evaluation.message,
         )
-
+  
 
 def serve():
     gr = SBGameRegistry()
@@ -84,7 +76,7 @@ def serve():
 
     rpcservice.launch()
 
-    server.add_insecure_port('localhost:50051')
+    server.add_insecure_port(f"{config.server_host}:{config.server_port}")
     server.start()
     server.wait_for_termination()
 

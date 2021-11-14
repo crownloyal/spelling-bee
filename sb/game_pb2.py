@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ngame.proto\x12\x02sb\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"\x9c\x01\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x06 \x01(\t\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\x05\x12\x11\n\tattemptId\x18\x05 \x01(\x05\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t\"!\n\x0cStateRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\t\"\x96\x01\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x03\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t2\xe0\x01\n\rSBGameService\x12\x30\n\nCreateGame\x12\x0f.sb.SBGameState\x1a\x0f.sb.SBGameState\"\x00\x12\x34\n\x0c\x41ttemptGuess\x12\x0b.sb.Attempt\x1a\x15.sb.AttemptEvaluation\"\x00\x12\x35\n\x0eGetSBGameState\x12\x10.sb.StateRequest\x1a\x0f.sb.SBGameState\"\x00\x12\x30\n\rGetHighscores\x12\n.sb.Player\x1a\x0f.sb.SBGameState\"\x00\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\ngame.proto\x12\x02sb\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"w\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\t\x12\x11\n\tattemptId\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\t\"!\n\x0cStateRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\t\"\xa7\x01\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x03\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t\x12\x0f\n\x07letters\x18\t \x03(\t2\xe0\x01\n\rSBGameService\x12\x30\n\nCreateGame\x12\x0f.sb.SBGameState\x1a\x0f.sb.SBGameState\"\x00\x12\x34\n\x0c\x41ttemptGuess\x12\x0b.sb.Attempt\x1a\x15.sb.AttemptEvaluation\"\x00\x12\x35\n\x0eGetSBGameState\x12\x10.sb.StateRequest\x1a\x0f.sb.SBGameState\"\x00\x12\x30\n\rGetHighscores\x12\n.sb.Player\x1a\x0f.sb.SBGameState\"\x00\x30\x01\x62\x06proto3'
 )
 
 
@@ -133,50 +133,36 @@ _ATTEMPTEVALUATION = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='message', full_name='sb.AttemptEvaluation.message', index=1,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='word', full_name='sb.AttemptEvaluation.word', index=2,
+      name='word', full_name='sb.AttemptEvaluation.word', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='points', full_name='sb.AttemptEvaluation.points', index=3,
+      name='points', full_name='sb.AttemptEvaluation.points', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='sb.AttemptEvaluation.timestamp', index=4,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='timestamp', full_name='sb.AttemptEvaluation.timestamp', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='attemptId', full_name='sb.AttemptEvaluation.attemptId', index=5,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='attemptId', full_name='sb.AttemptEvaluation.attemptId', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='error', full_name='sb.AttemptEvaluation.error', index=6,
-      number=7, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='errorMessage', full_name='sb.AttemptEvaluation.errorMessage', index=7,
-      number=8, type=9, cpp_type=9, label=1,
+      name='message', full_name='sb.AttemptEvaluation.message', index=5,
+      number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -193,8 +179,8 @@ _ATTEMPTEVALUATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=133,
-  serialized_end=289,
+  serialized_start=132,
+  serialized_end=251,
 )
 
 
@@ -225,8 +211,8 @@ _STATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=291,
-  serialized_end=324,
+  serialized_start=253,
+  serialized_end=286,
 )
 
 
@@ -294,6 +280,13 @@ _SBGAMESTATE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='letters', full_name='sb.SBGameState.letters', index=8,
+      number=9, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -306,8 +299,8 @@ _SBGAMESTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=327,
-  serialized_end=477,
+  serialized_start=289,
+  serialized_end=456,
 )
 
 DESCRIPTOR.message_types_by_name['Player'] = _PLAYER
@@ -361,8 +354,8 @@ _SBGAMESERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=480,
-  serialized_end=704,
+  serialized_start=459,
+  serialized_end=683,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateGame',
