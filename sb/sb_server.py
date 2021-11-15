@@ -1,61 +1,89 @@
 #!/usr/bin/env python3
 
+from os import stat
 import config
 import logging
 from concurrent import futures
 
 import grpc
+import game_pb2
 import game_pb2_grpc
-from sb_game_registry import SBGameRegistry
-from sb_game import SBGame, Attempt
 
-GRPC_VERBOSITY="debug"
-GRPC_TRACE="all"
+from sb_game_registry import SBGameRegistry
+from sb_game import AttemptEvaluation, SBGame, Attempt
 
 # inherit service class from compiled proto
 class SBGameServer(game_pb2_grpc.SBGameService):
-    def __init__(self, sbgreg: SBGameRegistry):
+    def __init__(self, sbgr: SBGameRegistry, game: SBGame) -> None:
         super().__init__()
-        # launch game instance for logic and persistence
-        self.gr = sbgreg
-        self.game = SBGame(self.gr)
-        
-    def launch(self):
-        self.CreateGame(self.gr, None)
-
-    def CreateGame(self, req, context):
-        response = self.game.new_game()
-        gamestate = self.gr.gamestate()
-        return gamestate
-
-    def AttemptGuess(self, req, context):
-        print("attempt event triggered")
-        word = req
-        evaluation = self.game.validate_attempt(
-            Attempt(word, self.gr.letters)
-        )
-        return evaluation
+        self.gr = sbgr
+        self.game = game
 
     def GetSBGameState(self, req, context):
-        # req is the client state; it *should* differ from the in-server state
-        print("Gamestate req in")
-        req_time = req
-        gamestate = self.gr.gamestate()
-        return gamestate
+        state = self.gr.gamestate()
+        return game_pb2.SBGameState(
+            player=state.player,
+            session=state.session,
+            score=state.score,
+            tries=state.tries,
+            wordlist=state.wordlist,
+            timestamp=state.timestamp,
+            letters=state.letters
+            )
+    
+    def launch(self):
+        self.CreateGame(game_pb2.StateRequest(), None)
+
+    def CreateGame(self, req, context):
+        self.gr.create_game()
+        state = self.gr.gamestate()
+        return game_pb2.SBGameState(
+            player=state.player,
+            session=state.session,
+            score=state.score,
+            tries=state.tries,
+            wordlist=state.wordlist,
+            timestamp=state.timestamp,
+            letters=self.gr.letters
+            )
+
+    def AttemptGuess(self, req, context) -> AttemptEvaluation:
+        word = req.word
+        attempt = Attempt(word, self.gr.letters)
+        evaluation = self.game.validate_attempt(attempt)
+
+        if evaluation.valid is True:
+            self.game.process_valid_attempt(evaluation)
+
+        return game_pb2.AttemptEvaluation(
+            valid = evaluation.valid,
+            word = evaluation.word,
+            points = evaluation.points,
+            timestamp = evaluation.timestamp,
+            attemptId = evaluation.attemptId,
+            message = evaluation.message,
+        )
+  
+    def GetHighscores(self, req, context):
+        return game_pb2.SBHighScores(
+            player = "crown",
+            score = self.gr.highscore
+        )
+
+def serve():
+    gr = SBGameRegistry()
+    game = SBGame(gr)
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    rpcservice = SBGameServer(gr, game)
+    game_pb2_grpc.add_SBGameServiceServicer_to_server(rpcservice, server)
+
+    rpcservice.launch()
+
+    server.add_insecure_port(f"{config.server_host}:{config.server_port}")
+    server.start()
+    server.wait_for_termination()
+
 
 if __name__ == '__main__':
     logging.basicConfig()
-
-    gr = SBGameRegistry()
-    gameserver = SBGameServer(gr)
-    gameserver.launch()
-
-    # setup server
-    rpcserver = grpc.server(futures.ProcessPoolExecutor(max_workers=10))
-    game_pb2_grpc.add_SBGameServiceServicer_to_server(gameserver, rpcserver)
-    # open grpc port
-    rpcserver.add_insecure_port(f"{config.server_host}:{config.server_port}")
-    rpcserver.start()
-    print(f"Connection open @ {config.server_host}:{config.server_port}")
-    rpcserver.wait_for_termination()
-
+    serve()

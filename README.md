@@ -16,7 +16,7 @@ Sets up connection to the oxford dictionary api
 SBGameRegistry - Game in-memory singleton that holds current game state such as
     - letters
     - solution attempt
-This is a singleton to have multiple clients interact with the same instance instead of spawning a new instance for each 
+This is a *singleton* to have multiple clients interact with the same instance instead of spawning a new instance for each 
 
 Config files and utility such as API keys and constats are stored in 
 config and config_game respectively
@@ -39,7 +39,7 @@ Compiling the proto definition:
 > python3 -m grpc_tools.protoc -I . --grpc_python_out=./sb --python_out=./sb ./game.proto
 
 launch the server:
-> python3 ./sb/debug-sbserver.py
+> python3 ./sb/sb_server.py
 
 launch the client:
 > python3 ./sb/interactive_console.py
@@ -49,6 +49,7 @@ Start playing!
 == Available commands ==
 .new
 Starts a new game with scores reset
+This is especially useful if RNG decides to give you no vowels
 
 .scores
 Returns the player name and highest score (in-memory only)
@@ -58,3 +59,19 @@ Doesn't really try to help
 
 .exit or .q
 closes the interactive console
+
+GRPC is being used (as per proto file):
+- Transmit current game state from server to client
+- Transmit word/attempt from client to server
+- Transmit evaluation of word/attempt from server to client
+- Transmit current highscore stats
+
+Improvement opportunities:
+- Multiplayer (coop or battle)
+- Time limit
+- Data persistence
+- streaming highscores (top 5)
+
+
+Note:
+Depending on the env, I ran into issues importing standard libs like request or ABC; ensuring correct chmod permission on the /usr/ folders seems to fix it

@@ -7,6 +7,5 @@ protobuf
 requests
 futures
 uuid
-threading
 time
 logging
