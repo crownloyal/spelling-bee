@@ -7,15 +7,16 @@ Name: Dominic M Brause
 =Architecture:=
 
 Classes and Modules:
-SBGameServer - launches instances of SBGame and SBGameRegistry
+SBGameServer/debug-sbserver - launches instances of SBGame and SBGameRegistry, and pulls them together for a working spelling bee game
+Also launches grpc server
 
 SBGame - Interacting with SBGameRegistry as a player would
+Sets up connection to the oxford dictionary api
 
 SBGameRegistry - Game in-memory singleton that holds current game state such as
     - letters
     - solution attempt
 This is a singleton to have multiple clients interact with the same instance instead of spawning a new instance for each 
-
 
 Config files and utility such as API keys and constats are stored in 
 config and config_game respectively
@@ -31,7 +32,7 @@ protobuf
 Installing above dependencies:
 > pip3 install -r requirements.txt
 
-*Running this madness:*
+*Running:*
 Compiling the proto definition:
 > protoc -I=. --python_out=./sb ./game.proto
 , or alternatively

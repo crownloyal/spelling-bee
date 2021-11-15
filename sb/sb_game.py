@@ -69,9 +69,15 @@ class SBGame:
             new_attempt.valid = False
             new_attempt.message = (f"Not a valid word if you believe Oxford")
             return new_attempt
+        print(ox_result)
         word_type = ox_result[0]["lexicalEntries"][0]["lexicalCategory"]["text"]
-        word_sense = ox_result[0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
-        new_attempt.message = (f"{word_type}; {word_sense}")
+        
+        # sometimes words don't make sense?
+        try: 
+            word_sense = ox_result[0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+            new_attempt.message = (f"{word_type}; {word_sense}")
+        except:
+            new_attempt.message = (f"{word_type};")
         return new_attempt
     
     def calculate_points(self, attempt: AttemptEvaluation):
