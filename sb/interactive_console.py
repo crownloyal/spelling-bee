@@ -5,7 +5,7 @@ import grpc
 import config
 import logging
 from game_pb2_grpc import SBGameServiceStub
-from game_pb2 import StateRequest, Attempt
+from game_pb2 import StateRequest, Attempt, Player
 from sb_game_registry import SBGameState
 
 class SBTerminal:
@@ -58,7 +58,7 @@ class SBTerminal:
         
     def help_module(self, word):
         if word == '.SCORES':
-            highscores = self.stub.GetHighscores(StateRequest(), None)
+            highscores = self.stub.GetHighscores(Player(), None)
             print(highscores)
         elif word == '.HELP':
             print("If you don't know this game, we can't help you.")

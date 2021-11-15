@@ -52,10 +52,7 @@ class SBGameServer(game_pb2_grpc.SBGameService):
         attempt = Attempt(word, self.gr.letters)
         evaluation = self.game.validate_attempt(attempt)
 
-        print("Matches", self.gr.matches)
-        print("Score", self.gr.score)
-
-        if evaluation.valid is True and evaluation.message == None:
+        if evaluation.valid is True:
             self.game.process_valid_attempt(evaluation)
 
         return game_pb2.AttemptEvaluation(
@@ -67,6 +64,11 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             message = evaluation.message,
         )
   
+    def GetHighscores(self, req, context):
+        return game_pb2.SBHighScores(
+            player = "crown",
+            score = self.gr.highscore
+        )
 
 def serve():
     gr = SBGameRegistry()

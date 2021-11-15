@@ -6,9 +6,10 @@ import config_game
 from uuid import uuid4
 from sb_game_registry import SBGameRegistry
 
-from oxforddictionaries.words import OxfordDictionaries
+from lib.oxford_apiv2 import OxfordApiV2, CachingLanguageDictionary
 
-o = OxfordDictionaries(config.api_key, config.api_secret)
+ox = OxfordApiV2(config.api_key, config.api_secret)
+cache = CachingLanguageDictionary(ox, 'en-gb')
 
 class Attempt:
     def __init__(self, word: str, letters: list):
@@ -51,21 +52,26 @@ class SBGame:
             new_attempt.message = "Word has non-matching letters"
             return new_attempt
         if new_attempt.word in self.gr.matches:
+            new_attempt.valid = False
             new_attempt.message = "Word already part of the solution set"
             return new_attempt
         if len(new_attempt.word) < config_game.MIN_WORD_LENGTH:
+            new_attempt.valid = False
             new_attempt.message = (f"Guessed word is too short. Minimum length: {str(config_game.MIN_WORD_LENGTH)}")
             return new_attempt
         if self.gr.letters[0] not in new_attempt.word:
+            new_attempt.valid = False
             new_attempt.message = (f"Must include letter: {self.gr.letters[0]}")
             return new_attempt
 
-        result = o.get_info_about_word(new_attempt.word).json()
-        if result is None:
-            new_attempt.error = True
+        ox_result = cache.get_definitions(new_attempt.word)
+        if ox_result == None:
+            new_attempt.valid = False
             new_attempt.message = (f"Not a valid word if you believe Oxford")
             return new_attempt
-        print("Word JSON:", result)
+        word_type = ox_result[0]["lexicalEntries"][0]["lexicalCategory"]["text"]
+        word_sense = ox_result[0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]
+        new_attempt.message = (f"{word_type}; {word_sense}")
         return new_attempt
     
     def calculate_points(self, attempt: AttemptEvaluation):

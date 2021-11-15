@@ -29,10 +29,10 @@ class SBGameServiceStub(object):
                 request_serializer=game__pb2.StateRequest.SerializeToString,
                 response_deserializer=game__pb2.SBGameState.FromString,
                 )
-        self.GetHighscores = channel.unary_stream(
+        self.GetHighscores = channel.unary_unary(
                 '/sb.SBGameService/GetHighscores',
                 request_serializer=game__pb2.Player.SerializeToString,
-                response_deserializer=game__pb2.SBGameState.FromString,
+                response_deserializer=game__pb2.SBHighScores.FromString,
                 )
 
 
@@ -81,10 +81,10 @@ def add_SBGameServiceServicer_to_server(servicer, server):
                     request_deserializer=game__pb2.StateRequest.FromString,
                     response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
-            'GetHighscores': grpc.unary_stream_rpc_method_handler(
+            'GetHighscores': grpc.unary_unary_rpc_method_handler(
                     servicer.GetHighscores,
                     request_deserializer=game__pb2.Player.FromString,
-                    response_serializer=game__pb2.SBGameState.SerializeToString,
+                    response_serializer=game__pb2.SBHighScores.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -158,8 +158,8 @@ class SBGameService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/sb.SBGameService/GetHighscores',
+        return grpc.experimental.unary_unary(request, target, '/sb.SBGameService/GetHighscores',
             game__pb2.Player.SerializeToString,
-            game__pb2.SBGameState.FromString,
+            game__pb2.SBHighScores.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

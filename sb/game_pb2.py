@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ngame.proto\x12\x02sb\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"w\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\t\x12\x11\n\tattemptId\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\t\"!\n\x0cStateRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\t\"\xa7\x01\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x03\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t\x12\x0f\n\x07letters\x18\t \x03(\t2\xe0\x01\n\rSBGameService\x12\x30\n\nCreateGame\x12\x0f.sb.SBGameState\x1a\x0f.sb.SBGameState\"\x00\x12\x34\n\x0c\x41ttemptGuess\x12\x0b.sb.Attempt\x1a\x15.sb.AttemptEvaluation\"\x00\x12\x35\n\x0eGetSBGameState\x12\x10.sb.StateRequest\x1a\x0f.sb.SBGameState\"\x00\x12\x30\n\rGetHighscores\x12\n.sb.Player\x1a\x0f.sb.SBGameState\"\x00\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\ngame.proto\x12\x02sb\"3\n\x06Player\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07session\x18\x03 \x01(\x05\";\n\x07\x41ttempt\x12\x0c\n\x04word\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"w\n\x11\x41ttemptEvaluation\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0c\n\x04word\x18\x02 \x01(\t\x12\x0e\n\x06points\x18\x03 \x01(\x05\x12\x11\n\ttimestamp\x18\x04 \x01(\t\x12\x11\n\tattemptId\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\t\"!\n\x0cStateRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\t\"\xa7\x01\n\x0bSBGameState\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\x03\x12\r\n\x05score\x18\x03 \x01(\x05\x12\r\n\x05tries\x18\x04 \x01(\x05\x12\x10\n\x08wordlist\x18\x05 \x03(\t\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\r\n\x05\x65rror\x18\x07 \x01(\x08\x12\x14\n\x0c\x65rrorMessage\x18\x08 \x01(\t\x12\x0f\n\x07letters\x18\t \x03(\t\"-\n\x0cSBHighScores\x12\x0e\n\x06player\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x03\x32\xdf\x01\n\rSBGameService\x12\x30\n\nCreateGame\x12\x0f.sb.SBGameState\x1a\x0f.sb.SBGameState\"\x00\x12\x34\n\x0c\x41ttemptGuess\x12\x0b.sb.Attempt\x1a\x15.sb.AttemptEvaluation\"\x00\x12\x35\n\x0eGetSBGameState\x12\x10.sb.StateRequest\x1a\x0f.sb.SBGameState\"\x00\x12/\n\rGetHighscores\x12\n.sb.Player\x1a\x10.sb.SBHighScores\"\x00\x62\x06proto3'
 )
 
 
@@ -303,11 +303,51 @@ _SBGAMESTATE = _descriptor.Descriptor(
   serialized_end=456,
 )
 
+
+_SBHIGHSCORES = _descriptor.Descriptor(
+  name='SBHighScores',
+  full_name='sb.SBHighScores',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='player', full_name='sb.SBHighScores.player', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='score', full_name='sb.SBHighScores.score', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=458,
+  serialized_end=503,
+)
+
 DESCRIPTOR.message_types_by_name['Player'] = _PLAYER
 DESCRIPTOR.message_types_by_name['Attempt'] = _ATTEMPT
 DESCRIPTOR.message_types_by_name['AttemptEvaluation'] = _ATTEMPTEVALUATION
 DESCRIPTOR.message_types_by_name['StateRequest'] = _STATEREQUEST
 DESCRIPTOR.message_types_by_name['SBGameState'] = _SBGAMESTATE
+DESCRIPTOR.message_types_by_name['SBHighScores'] = _SBHIGHSCORES
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Player = _reflection.GeneratedProtocolMessageType('Player', (_message.Message,), {
@@ -345,6 +385,13 @@ SBGameState = _reflection.GeneratedProtocolMessageType('SBGameState', (_message.
   })
 _sym_db.RegisterMessage(SBGameState)
 
+SBHighScores = _reflection.GeneratedProtocolMessageType('SBHighScores', (_message.Message,), {
+  'DESCRIPTOR' : _SBHIGHSCORES,
+  '__module__' : 'game_pb2'
+  # @@protoc_insertion_point(class_scope:sb.SBHighScores)
+  })
+_sym_db.RegisterMessage(SBHighScores)
+
 
 
 _SBGAMESERVICE = _descriptor.ServiceDescriptor(
@@ -354,8 +401,8 @@ _SBGAMESERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=459,
-  serialized_end=683,
+  serialized_start=506,
+  serialized_end=729,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateGame',
@@ -393,7 +440,7 @@ _SBGAMESERVICE = _descriptor.ServiceDescriptor(
     index=3,
     containing_service=None,
     input_type=_PLAYER,
-    output_type=_SBGAMESTATE,
+    output_type=_SBHIGHSCORES,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
