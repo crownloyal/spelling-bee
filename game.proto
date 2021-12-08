@@ -3,7 +3,7 @@ syntax = "proto3";
 package sb;
 
 service SBGameService {
-    rpc CreateGame (SBGameState) returns (SBGameState) {}
+    rpc CreateGame (NewGameRequest) returns (SBGameState) {}
     rpc AttemptGuess (Attempt) returns (AttemptEvaluation) {}
     rpc GetSBGameState (StateRequest) returns (SBGameState) {}
     rpc GetHighscores (Player) returns (SBHighScores) {}
@@ -32,21 +32,45 @@ message AttemptEvaluation {
 
 message StateRequest {
     string timestamp = 1;
+    string gamecode = 2;
 }
 
 message SBGameState {
-    string player = 1;
-    int64 session = 2; 
+    repeated string players = 1;
+    string gameId = 2; 
     int32 score = 3;
-    int32 tries = 4;
+    int32 attempts = 4;
     repeated string wordlist = 5;
-    int64 timestamp = 6;
-    bool error = 7;
-    string errorMessage = 8;
-    repeated string letters = 9;
+    string createdAt = 6;
+    string lastUpdate = 7;
+    bool error = 8;
+    string errorMessage = 9;
+    repeated string letters = 10;
+    repeated string matches = 11;
+    string gamecode = 12;
 }
 
 message SBHighScores {
     string player = 1;
     int64 score = 2;
+    int64 game_id = 3; 
+    repeated string letters = 4;
+    repeated string matches = 5;
+}
+
+message NewGameRequest {
+    string adminPlayer = 1;
+    string adminUUID = 2;
+}
+
+message GameResponse {
+    int32 activePlayers = 1;
+    string userSession = 2; 
+    string gamecode = 3;
+}
+
+message JoinGameRequest {
+    string gamecode = 1;
+    string username = 2; 
+    string userSession = 3; 
 }

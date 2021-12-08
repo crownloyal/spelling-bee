@@ -16,7 +16,7 @@ class SBGameServiceStub(object):
         """
         self.CreateGame = channel.unary_unary(
                 '/sb.SBGameService/CreateGame',
-                request_serializer=game__pb2.SBGameState.SerializeToString,
+                request_serializer=game__pb2.NewGameRequest.SerializeToString,
                 response_deserializer=game__pb2.SBGameState.FromString,
                 )
         self.AttemptGuess = channel.unary_unary(
@@ -68,7 +68,7 @@ def add_SBGameServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CreateGame': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateGame,
-                    request_deserializer=game__pb2.SBGameState.FromString,
+                    request_deserializer=game__pb2.NewGameRequest.FromString,
                     response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
             'AttemptGuess': grpc.unary_unary_rpc_method_handler(
@@ -108,7 +108,7 @@ class SBGameService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/sb.SBGameService/CreateGame',
-            game__pb2.SBGameState.SerializeToString,
+            game__pb2.NewGameRequest.SerializeToString,
             game__pb2.SBGameState.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -4,20 +4,22 @@ import time
 import grpc
 import config
 import logging
+from uuid import uuid4
 from game_pb2_grpc import SBGameServiceStub
-from game_pb2 import StateRequest, Attempt, Player
+from game_pb2 import StateRequest, NewGameRequest, Attempt, Player
 from sb_game_registry import SBGameState
 
 class SBTerminal:
-    def __init__(self):    
+    def __init__(self, user):    
         # establish grpc channel
         # inherit from grpc config
         channel = grpc.insecure_channel(f"{config.server_host}:{config.server_port}")
         print(f"Connecting to server @ {config.server_host}:{config.server_port}")
         self.stub = SBGameServiceStub(channel)
-        self.state = SBGameState() 
+        self.state = {} 
         self.exit = True
-        # let's use some empty state as placeholder
+        self.uuid = str(uuid4())
+        self.username = user
 
     def ask_user_input(self) -> str:
         user_input = input('Your guess: ')
@@ -35,26 +37,52 @@ class SBTerminal:
             validated_attempt = self.stub.AttemptGuess(attempt)
             if validated_attempt.message:
                 print(validated_attempt.message)
-            self.state = self.update_state()
+            self.state = self.update_state(self.state.gamecode)
 
-    def update_state(self) -> None:
+    def update_state(self, gamecode) -> None:
         timenow = str(time.time())
-        req = StateRequest(timestamp=timenow)
-        new = self.stub.GetSBGameState(req, None)
-        return new
+        req = StateRequest(timestamp=timenow, gamecode=gamecode)
+        new_state = self.stub.GetSBGameState(req, None)
+        self.state = self.map_state(new_state)
 
-    def print_state(self):
-        print("")
-        print("= = = = =")
-        print("INFO")
-        print("Player:", self.state.player)
-        print("Score:", self.state.score, "/ Avg:", self.state.score/self.state.tries if self.state.tries else 0) # sheesh python, I'll never like you but this kinda neat
-        print("Tries:", self.state.tries)
-        print("Solved:", self.state.wordlist)
-        print("Letters:", self.state.letters)
-        print("           ^ First letter required!")
-        print("= = = = =")
-        print("")
+    def map_state(self, state_response) -> SBGameState:
+        return SBGameState(
+                players = state_response.players,
+                game_id = state_response.gameId,
+                score = state_response.score,
+                attempts = state_response.attempts,
+                letters = state_response.letters,
+                matches = state_response.matches,
+                created_at = state_response.createdAt,
+                last_update = state_response.lastUpdate,
+                gamecode = state_response.gamecode
+            )
+
+    def new_game(self) -> None:
+        req = NewGameRequest(
+            adminPlayer = self.username, 
+            adminUUID = self.uuid
+        )
+        new_state = self.stub.CreateGame(req, None)
+        self.state = self.update_state(new_state.gamecode)
+        
+
+    def join_game(self, gamecode):
+        if gamecode:
+            try:
+                self.state = terminal.update_state(gamecode=gamecode)
+                return
+            except: 
+                print("Couldn't find game, generating new one")
+        
+        self.state = terminal.new_game()
+        return
+
+    def loop(self):
+        self.state.print()
+        guess = self.ask_user_input()
+        self.try_solution(guess)
+        self.state = self.update_state(gamecode=self.state.gamecode)
         
     def help_module(self, word):
         if word == '.SCORES':
@@ -64,24 +92,23 @@ class SBTerminal:
             print("If you don't know this game, we can't help you.")
             return
         elif word == '.NEW':
-            return self.stub.CreateGame(StateRequest(), None)
+            return self.new_game()
         elif word == '.EXIT' or word == '.Q':
             print("Quitting...")
             # optional: save state in DB
             self.exit = False
         else:
-            print('Did not recognize command; try $SCORES or $HELP')
+            print('Did not recognize command; try .SCORES or .HELP')
 
 if __name__ == '__main__':
     logging.basicConfig()
-    # console game loop
-    def wrapper():
-        while terminal.exit:
-            terminal.print_state()
-            guess = terminal.ask_user_input()
-            terminal.try_solution(guess)
-            terminal.state = terminal.update_state()
     
-    terminal = SBTerminal()
-    terminal.state = terminal.update_state()
-    wrapper()
+    player = input('Your name: ')
+    gamecode = input('Join game: ')
+
+    terminal = SBTerminal(player)
+    terminal.join_game(gamecode)
+
+    # console game loop
+    while terminal.exit:
+        terminal.loop()

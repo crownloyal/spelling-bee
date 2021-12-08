@@ -11,41 +11,59 @@ from letter_scramble import roll_multiple_unique_letters
 class SBGameState:
     def __init__(
             self, 
-            player = 0, 
-            session = 0, 
-            score = 0, 
-            tries = 0,
-            wordlist = [],
-            time = 0,
+            players = [],
+            admin_uuid = None, 
+            game_id = None,
+            score = 0,
+            attempts = 0,
+            wordlist = [], 
             letters = [],
+            matches = [],
+            created_at = str(time.time()),
+            last_update = None,
+            gamecode = None
         ):
-        self.player = player
-        self.session = session
+        # game ids
+        self.players = players
+        self.admin_uuid = admin_uuid
+        self.game_id = game_id if game_id else str(uuid4())
+        # game preperation
         self.score = score
-        self.tries = tries
+        self.attempts = attempts
         self.wordlist = wordlist
-        self.timestamp = time
         self.letters = letters
+        self.matches = matches
+        self.created_at = created_at
+        self.last_update = last_update if last_update != None else self.created_at
+        # generate game id (playername + uuid[1:8])
+        short_gamecode = self.players[0] if len(self.players) > 0 else "game"
+        self.gamecode = short_gamecode + self.game_id[1:8]
 
     def print(self):
-        print("Player:", self.player)
-        print("session:", self.session)
-        print("score:", self.score)
-        print("wordlist:", self.wordlist)
-        print("timestamp:", self.timestamp)
-        print("letters:", self.letters)
+        print("")
+        print("= = = = =")
+        print("INFO")
+        print("Player:", self.players)
+        print("Score:", self.score, "/ Avg:", self.score/self.attempts if self.attempts else 0) # sheesh python, I'll never like you but this kinda neat
+        print("Tries:", self.attempts)
+        print("Solved:", self.wordlist)
+        print("Letters:", self.letters)
+        print("           ^ First letter required!")
+        print("= = = = =")
+        print("")
+
+    def print_game_status_short(self):
+        letters = str(self.letters)
+        gamecode = self.gamecode
+        print(f"{gamecode} :: {letters}")
 
 class SBGameRegistry:
     _instance = None
     _lock = threading.Lock()
 
     def __init__(self) -> None:
-        self.matches = []
-        self.letters = None
-        self.attempts = 0
-        self.score = 0
-        self.highscore = 0
-
+        self.games = {}
+        
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             with cls._lock:
@@ -64,28 +82,29 @@ class SBGameRegistry:
                     SBGameRegistry()
                 return SBGameRegistry._instance
     
-    def create_game(self):
-        if self.highscore < self.score:
-            self.highscore = self.score
-        self.letters = roll_multiple_unique_letters(7)
-        self.attempts = 0
-        self.score = 0
-        self.matches = []
-        print(self.print_game_status())
-        
-    def print_game_status(self):
-        letters = self.letters
-        points = self.score
-        return [ letters, points ]
+    def create_game(self, uuid, playername) -> SBGameState:
+        letters = roll_multiple_unique_letters(7)
+        new_game = SBGameState(
+            players = [ playername ],
+            admin_uuid = uuid,
+            letters = letters
+            )
+        self.games[new_game.gamecode] = new_game
+        new_game.print_game_status_short()
+        return new_game
 
-    def gamestate(self):
-        state = SBGameState(
-            "crown", 
-            0,
-            self.score,
-            self.attempts,
-            self.matches,
-            int(time.time()),
-            letters=self.letters
-        )
-        return state
+    def lookup_game_session(self, sessionid):
+        for game in self.games:
+            if game.session == sessionid:
+                return game
+            else:
+                return None
+
+    def lookup_game_code(self, gamecode: str):
+        if self.games[gamecode]:
+            return self.games[gamecode]
+        return None
+
+    def gamestate(self, gamecode: str) -> SBGameState:
+        game = self.lookup_game_code(gamecode)
+        return game

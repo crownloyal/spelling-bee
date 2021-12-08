@@ -9,3 +9,4 @@ futures
 uuid
 time
 logging
+pika

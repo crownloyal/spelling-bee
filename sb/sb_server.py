@@ -20,31 +20,32 @@ class SBGameServer(game_pb2_grpc.SBGameService):
         self.game = game
 
     def GetSBGameState(self, req, context):
-        state = self.gr.gamestate()
+        state = self.gr.gamestate(req.gamecode)
         return game_pb2.SBGameState(
-            player=state.player,
-            session=state.session,
-            score=state.score,
-            tries=state.tries,
-            wordlist=state.wordlist,
-            timestamp=state.timestamp,
-            letters=state.letters
+            players = state.players,
+            gameId = state.game_id,
+            score = state.score,
+            attempts = state.attempts,
+            wordlist = state.wordlist,
+            lastUpdate = state.last_update,
+            letters = state.letters,
+            gamecode = state.gamecode,
             )
     
-    def launch(self):
-        self.CreateGame(game_pb2.StateRequest(), None)
-
     def CreateGame(self, req, context):
-        self.gr.create_game()
-        state = self.gr.gamestate()
+        game = self.gr.create_game(req.adminUUID, req.adminPlayer)
+        state = self.gr.gamestate(game.gamecode)
         return game_pb2.SBGameState(
-            player=state.player,
-            session=state.session,
-            score=state.score,
-            tries=state.tries,
-            wordlist=state.wordlist,
-            timestamp=state.timestamp,
-            letters=self.gr.letters
+            players = state.players,
+            gameId = state.game_id,
+            score = state.score,
+            attempts = state.attempts,
+            wordlist = state.wordlist,
+            createdAt = state.created_at,
+            lastUpdate = state.last_update,
+            letters = state.letters,
+            matches = state.matches,
+            gamecode = state.gamecode,
             )
 
     def AttemptGuess(self, req, context) -> AttemptEvaluation:
@@ -66,7 +67,7 @@ class SBGameServer(game_pb2_grpc.SBGameService):
   
     def GetHighscores(self, req, context):
         return game_pb2.SBHighScores(
-            player = "crown",
+            player = self.gr.players,
             score = self.gr.highscore
         )
 
@@ -76,8 +77,6 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     rpcservice = SBGameServer(gr, game)
     game_pb2_grpc.add_SBGameServiceServicer_to_server(rpcservice, server)
-
-    rpcservice.launch()
 
     server.add_insecure_port(f"{config.server_host}:{config.server_port}")
     server.start()
