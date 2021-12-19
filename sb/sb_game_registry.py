@@ -42,7 +42,7 @@ class SBGameState:
     def print(self):
         print("")
         print("= = = = =")
-        print("INFO")
+        print(f"INFO - {self.gamecode}")
         print("Player:", self.players)
         print("Score:", self.score, "/ Avg:", self.score/self.attempts if self.attempts else 0) # sheesh python, I'll never like you but this kinda neat
         print("Tries:", self.attempts)
@@ -101,10 +101,14 @@ class SBGameRegistry:
                 return None
 
     def lookup_game_code(self, gamecode: str):
-        if self.games[gamecode]:
+        try:
             return self.games[gamecode]
-        return None
+        except:
+            return Exception(f"Game registry: Could not find game {gamecode}")
 
     def gamestate(self, gamecode: str) -> SBGameState:
-        game = self.lookup_game_code(gamecode)
-        return game
+        try:
+            game = self.lookup_game_code(gamecode)
+            return game
+        except:
+            return Exception("Could not find game")

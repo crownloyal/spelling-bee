@@ -12,17 +12,18 @@ ox = OxfordApiV2(config.api_key, config.api_secret)
 cache = CachingLanguageDictionary(ox, 'en-gb')
 
 class Attempt:
-    def __init__(self, word: str, letters: list):
+    def __init__(self, word: str, letters: list, gamecode: str):
         self.word = word
         self.letters = letters
+        self.gamecode = gamecode
         validation = False # sane defaults
         if any(element in self.word for element in self.letters):
             validation = True
         self.valid = validation
 
 class AttemptEvaluation(Attempt):
-    def __init__(self, word: str, letters: list):
-        super().__init__(word, letters)
+    def __init__(self, word: str, letters: list, gamecode: str):
+        super().__init__(word, letters, gamecode)
         self.timestamp = str(time.time())
         self.attemptId = str(uuid4())
         self.message = None
@@ -31,10 +32,9 @@ class AttemptEvaluation(Attempt):
         self.points = 0
 
 class Player:
-    def __init__(self):
+    def __init__(self, name="anon"):
         self.id = uuid4()
-        self.name = 'name'
-
+        self.name = name
 
 class SBGame:
     def __init__(self, gr: SBGameRegistry):
@@ -44,14 +44,16 @@ class SBGame:
         return self.gr.create_game()
 
     def validate_attempt(self, new_attempt: Attempt) -> AttemptEvaluation:
-        self.gr.attempts += 1
+        gamecode = new_attempt.gamecode
+        game = self.gr.gamestate(gamecode)
+        game.attempts += 1
 
-        new_attempt = AttemptEvaluation(new_attempt.word, new_attempt.letters)
+        new_attempt = AttemptEvaluation(new_attempt.word, new_attempt.letters, gamecode)
 
         if new_attempt.valid is False:
             new_attempt.message = "Word has non-matching letters"
             return new_attempt
-        if new_attempt.word in self.gr.matches:
+        if new_attempt.word in self.gr.games[gamecode].matches:
             new_attempt.valid = False
             new_attempt.message = "Word already part of the solution set"
             return new_attempt
@@ -59,9 +61,9 @@ class SBGame:
             new_attempt.valid = False
             new_attempt.message = (f"Guessed word is too short. Minimum length: {str(config_game.MIN_WORD_LENGTH)}")
             return new_attempt
-        if self.gr.letters[0] not in new_attempt.word:
+        if self.gr.games[gamecode].letters[0] not in new_attempt.word:
             new_attempt.valid = False
-            new_attempt.message = (f"Must include letter: {self.gr.letters[0]}")
+            new_attempt.message = (f"Must include letter: {self.gr.games[gamecode].letters[0]}")
             return new_attempt
 
         ox_result = cache.get_definitions(new_attempt.word)
@@ -87,7 +89,9 @@ class SBGame:
 
     def process_valid_attempt(self, attempt: AttemptEvaluation):
         if attempt.valid:
+            gamecode = attempt.gamecode
             attempt.points = self.calculate_points(attempt)
-            self.gr.score += attempt.points
-            self.gr.matches.append(attempt.word)
+            game = self.gr.gamestate(gamecode)
+            game.score += attempt.points
+            game.wordlist.append(attempt.word)
         

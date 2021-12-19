@@ -34,6 +34,16 @@ class SBGameServiceStub(object):
                 request_serializer=game__pb2.Player.SerializeToString,
                 response_deserializer=game__pb2.SBHighScores.FromString,
                 )
+        self.AddUserToGame = channel.unary_unary(
+                '/sb.SBGameService/AddUserToGame',
+                request_serializer=game__pb2.JoinGameRequest.SerializeToString,
+                response_deserializer=game__pb2.SBGameState.FromString,
+                )
+        self.UploadScore = channel.unary_unary(
+                '/sb.SBGameService/UploadScore',
+                request_serializer=game__pb2.StateRequest.SerializeToString,
+                response_deserializer=game__pb2.SBGameState.FromString,
+                )
 
 
 class SBGameServiceServicer(object):
@@ -63,6 +73,18 @@ class SBGameServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AddUserToGame(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UploadScore(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SBGameServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -85,6 +107,16 @@ def add_SBGameServiceServicer_to_server(servicer, server):
                     servicer.GetHighscores,
                     request_deserializer=game__pb2.Player.FromString,
                     response_serializer=game__pb2.SBHighScores.SerializeToString,
+            ),
+            'AddUserToGame': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddUserToGame,
+                    request_deserializer=game__pb2.JoinGameRequest.FromString,
+                    response_serializer=game__pb2.SBGameState.SerializeToString,
+            ),
+            'UploadScore': grpc.unary_unary_rpc_method_handler(
+                    servicer.UploadScore,
+                    request_deserializer=game__pb2.StateRequest.FromString,
+                    response_serializer=game__pb2.SBGameState.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -161,5 +193,39 @@ class SBGameService(object):
         return grpc.experimental.unary_unary(request, target, '/sb.SBGameService/GetHighscores',
             game__pb2.Player.SerializeToString,
             game__pb2.SBHighScores.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AddUserToGame(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/sb.SBGameService/AddUserToGame',
+            game__pb2.JoinGameRequest.SerializeToString,
+            game__pb2.SBGameState.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UploadScore(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/sb.SBGameService/UploadScore',
+            game__pb2.StateRequest.SerializeToString,
+            game__pb2.SBGameState.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

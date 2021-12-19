@@ -6,11 +6,12 @@ import config
 import logging
 from uuid import uuid4
 from game_pb2_grpc import SBGameServiceStub
-from game_pb2 import StateRequest, NewGameRequest, Attempt, Player
+from game_pb2 import StateRequest, NewGameRequest, JoinGameRequest, Attempt, Player
 from sb_game_registry import SBGameState
 
-class SBTerminal:
-    def __init__(self, user):    
+class SBTerminal():
+    def __init__(self, user):
+        super()
         # establish grpc channel
         # inherit from grpc config
         channel = grpc.insecure_channel(f"{config.server_host}:{config.server_port}")
@@ -33,17 +34,17 @@ class SBTerminal:
         elif user_input[0] == ".":
             self.help_module(user_input)
         else:
-            attempt = Attempt(word=user_input, session=0, timestamp=1)
+            attempt = Attempt(word=user_input, gamecode=self.state.gamecode, timestamp=1)
             validated_attempt = self.stub.AttemptGuess(attempt)
             if validated_attempt.message:
                 print(validated_attempt.message)
             self.state = self.update_state(self.state.gamecode)
 
-    def update_state(self, gamecode) -> None:
+    def update_state(self, gamecode) -> SBGameState:
         timenow = str(time.time())
         req = StateRequest(timestamp=timenow, gamecode=gamecode)
         new_state = self.stub.GetSBGameState(req, None)
-        self.state = self.map_state(new_state)
+        return self.map_state(new_state)
 
     def map_state(self, state_response) -> SBGameState:
         return SBGameState(
@@ -52,47 +53,58 @@ class SBTerminal:
                 score = state_response.score,
                 attempts = state_response.attempts,
                 letters = state_response.letters,
-                matches = state_response.matches,
+                wordlist = state_response.wordlist,
                 created_at = state_response.createdAt,
                 last_update = state_response.lastUpdate,
                 gamecode = state_response.gamecode
             )
 
-    def new_game(self) -> None:
+    def new_game(self) -> SBGameState:
         req = NewGameRequest(
             adminPlayer = self.username, 
             adminUUID = self.uuid
         )
         new_state = self.stub.CreateGame(req, None)
-        self.state = self.update_state(new_state.gamecode)
+        return self.map_state(new_state)
         
-
-    def join_game(self, gamecode):
+    def join_game(self, gamecode) -> None:
         if gamecode:
             try:
-                self.state = terminal.update_state(gamecode=gamecode)
-                return
-            except: 
+                req = JoinGameRequest(gamecode=gamecode, username=self.username)
+                state_response = self.stub.AddUserToGame(req, None)
+                self.state = self.map_state(state_response)
+                return #early
+            except Exception as ex: 
                 print("Couldn't find game, generating new one")
-        
-        self.state = terminal.new_game()
-        return
+                print("Exception:", ex)
+        self.state = self.new_game()
 
-    def loop(self):
-        self.state.print()
-        guess = self.ask_user_input()
-        self.try_solution(guess)
-        self.state = self.update_state(gamecode=self.state.gamecode)
+    def loop(self) -> None:
+        while self.exit:
+            self.state.print()
+            guess = self.ask_user_input()
+            self.try_solution(guess)
+            self.state = self.update_state(gamecode=self.state.gamecode)
         
-    def help_module(self, word):
+    def upload_score(self) -> None:
+        try:
+            req = StateRequest(gamecode=self.state.gamecode)
+            self.stub.UploadScore(req)
+        except Exception as ex:
+            print("Error uploading score. Please try again")
+            print(ex)
+
+
+    def help_module(self, word) -> None:
         if word == '.SCORES':
             highscores = self.stub.GetHighscores(Player(), None)
             print(highscores)
+        elif word == '.UPLOAD' or word == '.U':
+            self.upload_score()
         elif word == '.HELP':
             print("If you don't know this game, we can't help you.")
-            return
         elif word == '.NEW':
-            return self.new_game()
+            self.state = self.new_game()
         elif word == '.EXIT' or word == '.Q':
             print("Quitting...")
             # optional: save state in DB
@@ -110,5 +122,4 @@ if __name__ == '__main__':
     terminal.join_game(gamecode)
 
     # console game loop
-    while terminal.exit:
-        terminal.loop()
+    terminal.loop()

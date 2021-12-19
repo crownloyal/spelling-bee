@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-from os import stat
 import config
 import logging
+import pickle
 from concurrent import futures
+import threading
 
 import grpc
 import game_pb2
@@ -11,11 +12,12 @@ import game_pb2_grpc
 
 from sb_game_registry import SBGameRegistry
 from sb_game import AttemptEvaluation, SBGame, Attempt
+from sb_socket import SocketClientMixin
 
 # inherit service class from compiled proto
-class SBGameServer(game_pb2_grpc.SBGameService):
+class SBGameServer(game_pb2_grpc.SBGameService, SocketClientMixin):
     def __init__(self, sbgr: SBGameRegistry, game: SBGame) -> None:
-        super().__init__()
+        super(SocketClientMixin)
         self.gr = sbgr
         self.game = game
 
@@ -44,16 +46,20 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             createdAt = state.created_at,
             lastUpdate = state.last_update,
             letters = state.letters,
-            matches = state.matches,
             gamecode = state.gamecode,
             )
 
     def AttemptGuess(self, req, context) -> AttemptEvaluation:
         word = req.word
-        attempt = Attempt(word, self.gr.letters)
+        gamecode = req.gamecode
+        try: 
+            game = self.gr.lookup_game_code(gamecode)
+        except: 
+            return self.CreateGame()
+        attempt = Attempt(word, game.letters, gamecode)
         evaluation = self.game.validate_attempt(attempt)
 
-        if evaluation.valid is True:
+        if evaluation.valid:
             self.game.process_valid_attempt(evaluation)
 
         return game_pb2.AttemptEvaluation(
@@ -71,6 +77,39 @@ class SBGameServer(game_pb2_grpc.SBGameService):
             score = self.gr.highscore
         )
 
+    def AddUserToGame(self, req, context):
+        gamecode = req.gamecode
+        user = req.username
+        state = self.gr.gamestate(gamecode)
+        state.players.append(user)
+        return game_pb2.SBGameState(
+            players = state.players,
+            gameId = state.game_id,
+            score = state.score,
+            attempts = state.attempts,
+            wordlist = state.wordlist,
+            createdAt = state.created_at,
+            lastUpdate = state.last_update,
+            letters = state.letters,
+            gamecode = state.gamecode,
+            )
+
+    def UploadScore(self, req, context):
+        gamecode = req.gamecode
+        state = self.gr.gamestate(gamecode)
+        self.sock_send_object(state)
+        return game_pb2.SBGameState(
+            players = state.players,
+            gameId = state.game_id,
+            score = state.score,
+            attempts = state.attempts,
+            wordlist = state.wordlist,
+            createdAt = state.created_at,
+            lastUpdate = state.last_update,
+            letters = state.letters,
+            gamecode = state.gamecode,
+            )
+
 def serve():
     gr = SBGameRegistry()
     game = SBGame(gr)
@@ -79,6 +118,7 @@ def serve():
     game_pb2_grpc.add_SBGameServiceServicer_to_server(rpcservice, server)
 
     server.add_insecure_port(f"{config.server_host}:{config.server_port}")
+    print(f"Lauched on {config.server_host}:{config.server_port}")
     server.start()
     server.wait_for_termination()
 
