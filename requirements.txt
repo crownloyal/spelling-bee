@@ -6,7 +6,7 @@ grpcio-tools
 protobuf
 requests
 futures
-uuid
-time
-logging
+# uuid
+# time
+# logging
 pika

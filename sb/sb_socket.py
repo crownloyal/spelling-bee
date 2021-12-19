@@ -3,20 +3,34 @@ import pickle
 import config
 
 class SocketClientMixin:
+    # socket.AF_INET - address family, IPv4, some other possible are AF_INET6, AF_BLUETOOTH, AF_UNIX
+    # socket.SOCK_STREAM - TCP, connection-based, socket.SOCK_DGRAM - UDP, connectionless, datagrams, socket.SOCK_RAW - raw IP packets
+    # self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect_to_socketserver(self):
-        self.socket.connect((config.server_host, config.socket_port))
+        # https://docs.python.org/3/howto/sockets.html
+        # send() returns zero if broken
+        try:
+            self.socket.send("".encode("utf-8")) == 0
+        except:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.socket.connect((config.server_host, config.socket_port))
+
+    def close_socket(self):
+        try:
+            if self.socket.send("".encode("utf-8")) != 0:
+                self.socket.close()
+        except:
+            pass
 
     def receive_message_test(self):
         message = self.socket.recv(config.socket_message_buffer_length)
         print(message.decode("utf-8"))  
-        self.socket.close()
 
     def send_message_test(self):
         message = ("Hello world!").encode("utf-8")
         self.socket.send(message)
-        self.socket.close()
 
     def sock_send_object(self, obj):
         try:
@@ -25,36 +39,27 @@ class SocketClientMixin:
             message_header = f"{len(message):<{config.socket_message_header_length}}"
             composed = bytes(f"{message_header}", 'utf-8') + message
             self.socket.send(composed)
-            self.socket.close()
         except Exception as ex:
             print(ex)
 
-class SocketServerMixin:
-    # socket.AF_INET - address family, IPv4, some otehr possible are AF_INET6, AF_BLUETOOTH, AF_UNIX
-    # socket.SOCK_STREAM - TCP, conection-based, socket.SOCK_DGRAM - UDP, connectionless, datagrams, socket.SOCK_RAW - raw IP packets
-    # self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # SO_ - socket option
-    # SOL_ - socket option level
-    # Sets REUSEADDR (as a socket option) to 1 on socket
-    socket_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    sockets_active = [ socket_server ]
-    clients_active = {}
-
+class SocketServerMixin(SocketClientMixin):
+    
     def __init__(self):
+        super()
+        self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # SO_ - socket option
+        # SOL_ - socket option level
+        # Sets REUSEADDR (as a socket option) to 1 on socket
+        self.socket_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket_server.bind((config.server_host, config.socket_port))
         self.socket_server.listen(16)
-        print(f'INFO: Listening for connections on {config.server_host}:{config.socket_port}')        
-
-    def sendMessageTest(self, c_socket):
-        while True:
-            c_socket.send(bytes("Hey there!!!","utf-8"))
+        print(f'INFO: Listening for connections on {config.server_host}:{config.socket_port}')
+        self.sockets_active = [ self.socket_server ]
+        self.clients_active = {}
 
     def listen(self):
         clientsocket, address = self.socket_server.accept()
         print(f"INFO: Connection from {address} has been established")
-        self.clients_active[address] = clientsocket
 
     def sock_receive_message(self, c_socket: socket.socket):
         full_message = b''

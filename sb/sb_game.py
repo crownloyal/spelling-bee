@@ -50,10 +50,10 @@ class SBGame:
 
         new_attempt = AttemptEvaluation(new_attempt.word, new_attempt.letters, gamecode)
 
-        if new_attempt.valid is False:
+        if new_attempt.valid == False:
             new_attempt.message = "Word has non-matching letters"
             return new_attempt
-        if new_attempt.word in self.gr.games[gamecode].matches:
+        if new_attempt.word in game.wordlist:
             new_attempt.valid = False
             new_attempt.message = "Word already part of the solution set"
             return new_attempt
@@ -63,7 +63,7 @@ class SBGame:
             return new_attempt
         if self.gr.games[gamecode].letters[0] not in new_attempt.word:
             new_attempt.valid = False
-            new_attempt.message = (f"Must include letter: {self.gr.games[gamecode].letters[0]}")
+            new_attempt.message = (f"Must include letter: {game.letters[0]}")
             return new_attempt
 
         ox_result = cache.get_definitions(new_attempt.word)

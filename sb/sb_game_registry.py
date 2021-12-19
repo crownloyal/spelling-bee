@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from logging import error
 import time
 import threading
 from typing import List
@@ -18,7 +17,6 @@ class SBGameState:
             attempts = 0,
             wordlist = [], 
             letters = [],
-            matches = [],
             created_at = str(time.time()),
             last_update = None,
             gamecode = None
@@ -32,7 +30,6 @@ class SBGameState:
         self.attempts = attempts
         self.wordlist = wordlist
         self.letters = letters
-        self.matches = matches
         self.created_at = created_at
         self.last_update = last_update if last_update != None else self.created_at
         # generate game id (playername + uuid[1:8])
@@ -87,7 +84,8 @@ class SBGameRegistry:
         new_game = SBGameState(
             players = [ playername ],
             admin_uuid = uuid,
-            letters = letters
+            letters = letters,
+            wordlist=[]
             )
         self.games[new_game.gamecode] = new_game
         new_game.print_game_status_short()

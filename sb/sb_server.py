@@ -2,9 +2,7 @@
 
 import config
 import logging
-import pickle
 from concurrent import futures
-import threading
 
 import grpc
 import game_pb2
@@ -53,7 +51,7 @@ class SBGameServer(game_pb2_grpc.SBGameService, SocketClientMixin):
         word = req.word
         gamecode = req.gamecode
         try: 
-            game = self.gr.lookup_game_code(gamecode)
+            game = self.gr.gamestate(gamecode)
         except: 
             return self.CreateGame()
         attempt = Attempt(word, game.letters, gamecode)
@@ -97,6 +95,7 @@ class SBGameServer(game_pb2_grpc.SBGameService, SocketClientMixin):
     def UploadScore(self, req, context):
         gamecode = req.gamecode
         state = self.gr.gamestate(gamecode)
+        self.connect_to_socketserver()
         self.sock_send_object(state)
         return game_pb2.SBGameState(
             players = state.players,
@@ -118,7 +117,7 @@ def serve():
     game_pb2_grpc.add_SBGameServiceServicer_to_server(rpcservice, server)
 
     server.add_insecure_port(f"{config.server_host}:{config.server_port}")
-    print(f"Lauched on {config.server_host}:{config.server_port}")
+    print(f"Launched on {config.server_host}:{config.server_port}")
     server.start()
     server.wait_for_termination()
 
